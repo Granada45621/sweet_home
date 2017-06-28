@@ -78,7 +78,7 @@ io.on('connection', function (socket) {
         user = data;
         users[no] = data;
 
-        socket.emit('user-update', user);
+        //socket.emit('user-update', user);
         io.emit('update-users', { users : users });
     });
 
