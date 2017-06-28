@@ -51,7 +51,7 @@
             var x = e.clientX;
             var y = e.clientY;
 
-			var size = 40;
+			var size = 20;
 
 			x = parseInt( x / size );
 			y = parseInt( y / size );
@@ -119,7 +119,7 @@
 
 	<script Draw>
         Draw.Map = function(){
-            var size = 40;
+            var size = 20;
 
             for( var y = 0; y < map.size.y; y++ ){
                 for( var x = 0; x < map.size.x; x++ ){
@@ -143,7 +143,7 @@
         };
 
         Draw.Text = function(){
-            var size = 40;
+            var size = 20;
             var keys = Object.keys(text);
 
             for( var i = 0; i < keys.length; i++ ){
@@ -160,8 +160,8 @@
         };
 
         Draw.User = function(){
-            var size = 40;
-            var s = 20;
+            var size = 20;
+            var s = 10;
 
             for( var u = 0, len = users.length; u < len; u++ ){
                 var us = users[u];

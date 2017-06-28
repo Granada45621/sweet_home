@@ -19,7 +19,7 @@ function Vector(x, y){
 }
 Vector.prototype.Clone = function(){
     return new Vector(this.x, this.y);
-}
+};
 
 function Tile(wall){
     this.wall = wall;
@@ -31,7 +31,7 @@ function Tile(wall){
 
 var map = {
     main : [],
-    size : new Vector(30, 20)
+    size : new Vector(40, 40)
 };
 var text = {};
 var Set = {};
@@ -46,13 +46,6 @@ Func.InMap = function( x, y ){
         return true;
     else
         return false;
-};
-
-Func.Broadcast = function(event, data){
-    for (var i = 0, len = sockets.length; i < len; i++){
-        socket = sockets[i];
-        socket.emit(event, data);
-    }
 };
 
 
@@ -74,7 +67,7 @@ io.on('connection', function (socket) {
         no = users.length-1;
 
         socket.emit('user-update', user);
-        Func.Broadcast('update', { users : users, map : map, text : text });
+        io.emit('update', { users : users, map : map, text : text });
 
         console.log(name+' Login');
     });
@@ -84,7 +77,7 @@ io.on('connection', function (socket) {
         users[no] = data;
 
         socket.emit('user-update', user);
-        Func.Broadcast('update', { users : users, map : map, text : text });
+        io.emit('update', { users : users, map : map, text : text });
     });
 
     socket.on('update-map', function(vec){
@@ -93,7 +86,7 @@ io.on('connection', function (socket) {
         if( tile.wall == '' ) tile.wall = 'wall';
         else tile.wall = '';
 
-        Func.Broadcast('update', { users : users, map : map, text : text });
+        io.emit('update', { users : users, map : map, text : text });
     });
 
     socket.on('update-map-public', function(vec){
@@ -102,7 +95,7 @@ io.on('connection', function (socket) {
         if( tile.owner.type == 'private' ) tile.owner.type = 'public';
         else tile.owner.type = 'private';
 
-        Func.Broadcast('update', { users : users, map : map, text : text });
+        io.emit('update', { users : users, map : map, text : text });
     });
 
     socket.on('update-text', function(data){
@@ -114,7 +107,7 @@ io.on('connection', function (socket) {
         users.splice(users.indexOf(user), 1);
         sockets.splice(sockets.indexOf(socket), 1);
 
-        Func.Broadcast('update', { users : users, map : map, text : text });
+        io.emit('update', { users : users, map : map, text : text });
     });
 });
 
