@@ -31,7 +31,7 @@ function Tile(wall){
 
 var map = {
     main : [],
-    size : new Vector(40, 40)
+    size : new Vector(60, 40)
 };
 var text = {};
 var Set = {};
