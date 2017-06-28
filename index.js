@@ -1,12 +1,12 @@
-var http = require("http");
-var path = require("path");
+const http = require("http");
+const path = require("path");
 
-var socketio = require("socket.io");
-var express = require("express");
+const socketio = require("socket.io");
+const express = require("express");
 
-var router = express();
-var server = http.createServer(router);
-var io = socketio.listen(server);
+const router = express();
+const server = http.createServer(router);
+const io = socketio.listen(server);
 
 router.use(express.static(__dirname + '/client'));
 var sockets = [];
@@ -67,7 +67,9 @@ io.on('connection', function (socket) {
         no = users.length-1;
 
         socket.emit('user-update', user);
-        io.emit('update', { users : users, map : map, text : text });
+        io.emit('update-users', { users : users });
+        io.emit('update-map', { map : map });
+        io.emit('update-text', { text : text });
 
         console.log(name+' Login');
     });
@@ -77,7 +79,9 @@ io.on('connection', function (socket) {
         users[no] = data;
 
         socket.emit('user-update', user);
-        io.emit('update', { users : users, map : map, text : text });
+        io.emit('update-users', { users : users });
+        io.emit('update-map', { map : map });
+        io.emit('update-text', { text : text });
     });
 
     socket.on('update-map', function(vec){
@@ -86,7 +90,7 @@ io.on('connection', function (socket) {
         if( tile.wall == '' ) tile.wall = 'wall';
         else tile.wall = '';
 
-        io.emit('update', { users : users, map : map, text : text });
+        io.emit('update-map', { map : map });
     });
 
     socket.on('update-map-public', function(vec){
@@ -95,19 +99,21 @@ io.on('connection', function (socket) {
         if( tile.owner.type == 'private' ) tile.owner.type = 'public';
         else tile.owner.type = 'private';
 
-        io.emit('update', { users : users, map : map, text : text });
+        io.emit('update-area', { map : map });
     });
 
     socket.on('update-text', function(data){
         var vector = data.vector;
         text[ vector.x+' '+vector.y ] = data;
+
+        io.emit('update-text', { text : text });
     });
 
     socket.on('disconnect', function () {
         users.splice(users.indexOf(user), 1);
         sockets.splice(sockets.indexOf(socket), 1);
 
-        io.emit('update', { users : users, map : map, text : text });
+        io.emit('update-users', { users : users });
     });
 });
 
