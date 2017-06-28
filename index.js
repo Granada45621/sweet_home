@@ -88,7 +88,7 @@ io.on('connection', function (socket) {
         if( tile.wall == '' ) tile.wall = 'wall';
         else tile.wall = '';
 
-        io.emit('update-map', { type: '', map : map, vec: vec });
+        io.emit('update-map', { type: '', vec: vec });
     });
 
     socket.on('update-map-public', function(vec){
@@ -97,7 +97,7 @@ io.on('connection', function (socket) {
         if( tile.owner.type == 'private' ) tile.owner.type = 'public';
         else tile.owner.type = 'private';
 
-        io.emit('update-area', { map : map, vec: vec });
+        io.emit('update-area', { vec: vec });
     });
 
     socket.on('update-text', function(data){
