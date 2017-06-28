@@ -79,7 +79,6 @@ io.on('connection', function (socket) {
         users[no] = data;
 
         socket.emit('user-update', user);
-        io.emit('update-users', { users : users });
     });
 
     socket.on('update-map', function(vec){
@@ -87,8 +86,6 @@ io.on('connection', function (socket) {
 
         if( tile.wall == '' ) tile.wall = 'wall';
         else tile.wall = '';
-
-        io.emit('update-map', { type: '', map : map, vec: vec });
     });
 
     socket.on('update-map-public', function(vec){
@@ -96,24 +93,25 @@ io.on('connection', function (socket) {
 
         if( tile.owner.type == 'private' ) tile.owner.type = 'public';
         else tile.owner.type = 'private';
-
-        io.emit('update-area', { map : map, vec: vec });
     });
 
     socket.on('update-text', function(data){
         var vector = data.vector;
         text[ vector.x+' '+vector.y ] = data;
-
-        io.emit('update-text', { text : text });
     });
 
     socket.on('disconnect', function () {
         users.splice(users.indexOf(user), 1);
         sockets.splice(sockets.indexOf(socket), 1);
-
-        io.emit('update-users', { users : users });
     });
 });
+
+setInterval(function(){
+    io.emit('update-users', { users : users });
+    io.emit('update-map', { type: '', map : map, vec: vec });
+    io.emit('update-area', { map : map, vec: vec });
+    io.emit('update-text', { text : text });
+}, 100);
 
 Set.Map = function(){
     map.main = [];
