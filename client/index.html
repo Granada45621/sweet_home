@@ -96,13 +96,25 @@
 		});
 
 		socket.on('update-map', function(data){
-            map = data.map;
+            if (data.type == 'all')
+                map = data.map;
+            else {
+                var vec = data.vec;
+                var tile = map.main[vec.y][vec.x]
+
+                if (tile.wall == '') tile.wall = 'wall';
+                else tile.wall = '';
+            }
 
             Draw.Main();
 		});
 
 		socket.on('update-area', function(data){
-            map = data.map;
+            var vec = data.vec;
+            var tile = map.main[vec.y][vec.x]
+
+            if( tile.owner.type == 'private' ) tile.owner.type = 'public';
+            else tile.owner.type = 'private';
 
             Draw.Main();
 		});
@@ -194,11 +206,13 @@
         };
 
         Draw.Main = function(){
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (user && map && users){
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            Draw.Map();
-            Draw.User();
-            Draw.Text();
+                Draw.Map();
+                Draw.User();
+                Draw.Text();
+            }
         };
 	</script>
 </body>
